@@ -31,7 +31,7 @@ fig.update_layout(title="Covid cases in Saudi Arabia with different events color
 fig.show()
 ```
 
-<img src="coloredline.png" width="1100" height="300" />
+<img src="coloredline.png" width="1000" height="300" />
 
 
 ## Installation
