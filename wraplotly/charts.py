@@ -49,12 +49,13 @@ class line(draw):
 
 
 class colored_line(draw):
-    def __init__(self, df=None, x=None, y=None, color=None, **kwargs):
+    def __init__(self, df=None, x=None, y=None, color=None, palette=None, **kwargs):
         self.kwargs = kwargs
         self.df = df
         self.x = x
         self.y = y
         self.color = color
+        self.palette = palette
 
     def __plot_fn__(self):
         if self.df is None:
@@ -66,7 +67,7 @@ class colored_line(draw):
 
         colors = [
             (int(r*255), int(g*255), int(b*255))\
-            for r, g, b in sns.color_palette(None, len(set(color)))
+            for r, g, b in sns.color_palette(self.palette, len(set(color)))
         ]
 
         color_palette = {
