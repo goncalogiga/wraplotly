@@ -1,4 +1,4 @@
-import pandas as pd
+import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
 from wraplotly.wraplotly import draw
@@ -64,6 +64,16 @@ class colored_line(draw):
 
         figures, colors_in_legend = [], set()
 
+        colors = [
+            (int(r*255), int(g*255), int(b*255))\
+            for r, g, b in sns.color_palette(None, len(set(color)))
+        ]
+
+        color_palette = {
+            c: '#%02x%02x%02x' % (colors[i][0], colors[i][1], colors[i][2])\
+            for i, c in enumerate(set(color))
+        }
+
         for tn in range(len(x)):
             if color[tn] not in colors_in_legend:
                 name = str(color[tn])
@@ -77,7 +87,7 @@ class colored_line(draw):
                 go.Scatter(
                     x=x[tn : tn + 2],
                     y=y[tn : tn + 2],
-                    line_color=px.colors.qualitative.Plotly[color[tn]],
+                    line_color=color_palette[color[tn]],
                     name=name,
                     showlegend=showlegend,
                     **self.kwargs
