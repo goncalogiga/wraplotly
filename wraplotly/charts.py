@@ -76,13 +76,13 @@ class colored_line(draw):
         }
 
         for tn in range(len(x)):
+            name = str(color[tn])
+
             if color[tn] not in colors_in_legend:
-                name = str(color[tn])
                 showlegend = True
                 colors_in_legend.add(color[tn])
             else:
                 showlegend = False
-                name = None
             
             figures.append(
                 go.Scatter(
