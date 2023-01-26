@@ -20,7 +20,19 @@ grid(line(x=[1,2,3], y=[-1,-1,5], name="Test 3"))
 grid.show()
 ```
 
-<img src="grid.png" width="900" height="200" />
+<img src="grid1.png" width="900" height="200" />
+
+The figure object can still be accessed with the ```fig``` proprety so the wrapper doesn't really restrain anything.
+For example, the wrapper class ```colored_line``` in the next example, makes it possible to add a title to the figure:
+
+```python
+fig = colored_line(dataset, x="Date", y="Cases", color="Event", mode="lines").fig
+fig.update_layout(title="Covid cases in Saudi Arabia with different events colored")
+fig.show()
+```
+
+<img src="coloredline.png" width="1100" height="300" />
+
 
 ## Installation
 
