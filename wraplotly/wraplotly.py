@@ -1,11 +1,24 @@
+"""
+Mother classes of wraplotly.
+
+The class draw is used for classes that directly plot graphs like line.
+
+The class arrange is used for classes that arrange plots in a certain way,
+such like Grid.
+"""
+
+
 class draw:
     _wraplotly_context: str = "px" # default is plotly express (easier to use)
 
     def __plot_fn__(self):
         raise NameError("Draw object does not define a '__plot_fn__' internal method.")
 
+    def show(self):
+        self.__plot_fn__().show()
+
     def __repr__(self):
-        self.__plot_fn__().show(); return ''
+        self.show(); return ''
 
 
 class arrange:

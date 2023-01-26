@@ -4,12 +4,50 @@ from wraplotly.wraplotly import arrange
 
 
 class Grid(arrange):
+    """
+    A class used to create grids in Plotly whitout using the usual subfigures method.
+
+    In order to create a Grid you have to define one with a given layout a populate it
+    by calling this class. Example:
+
+    grid = Grid([
+        [0,1], 
+        [0,2]
+    ])
+
+    grid(line(x=[1,2,3], y=[5,6,5], name="Test 1"))
+    grid(line(x=[1,2,3], y=[12,12,5], name="Test 2"))
+    grid(line(x=[1,2,3], y=[-1,-1,5], name="Test 3"))
+    grid.show()
+
+    Attributes
+    ----------
+    + layout : list
+        A list representing the layout of the grid. Each element represents the index of a plot (starts from 0)
+        and can be arranged as the users wishes. If you want for different graphs:
+        [[0,1], [2,3]]
+        If you want a large first plot followed by two smaller ones:
+        [[0,0], [1,2]]
+        ect...
+    + column_widths : list
+        A list specifying the percentage of space each column should take. If you want a 70% left and 30% right layout,
+        the paramater column_widths sould be [0.7, 0.3]. By default space is split equaly.
+    + row_heights : list
+        A list specifying the percentage of space each row should take (similar to column_widths)
+    + fig:
+        The actual object fig that is initialized with make_subplots. In order to access it (to do things like update_layout)
+        you need to call the build_fig() method first.
+
+    Methods
+    -------
+    + build_fig()
+        Populates the fig object by creating every traces and adding them to the subfigure constructor.
+    + plot()
+        Plots the Grid (defined in the mother class arange)
+    """
     objects, object_cnt= {}, 0
 
     def __init__(self, layout: list, column_widths=None, row_heights=None, **kwargs):
-        """
-        Layout example: [[0], [1], [2]] or [[0, 0], [1, 2]]
-        """
         self.kwargs = kwargs
         self.layout = np.array(layout)
         self.rows = self.layout.shape[0]
@@ -23,6 +61,9 @@ class Grid(arrange):
             self.specs = None
 
     def __build_objects_base_specs__(self):
+        """
+        Builds the specs argument that will be passed to make_subplots
+        """
         self.specs = [[None for j in range(self.cols)] for i in range(self.rows)]
 
         for i, line in enumerate(self.layout):
@@ -38,6 +79,10 @@ class Grid(arrange):
                         self.specs[i][j] = None
 
     def __call__(self, obj):
+        """
+        Adds a subplot. Every call to this class increases a counter (object_cnt) so the order
+        calls matters. It is linked to the indexes that were defined in the layout (during class construction).
+        """
         if self.object_cnt > self.nb_of_objs:
             raise RuntimeError(f"Too many objects added to Grid. Maximum calls available is {self.nb_of_objs}.")
             
@@ -45,6 +90,9 @@ class Grid(arrange):
         self.object_cnt += 1
 
     def build_fig(self):
+        """
+        Builds the fig object containing the grid.
+        """
         prefig = []
         used_objects_indexes = set()
 
@@ -77,7 +125,3 @@ class Grid(arrange):
 
         for data, kwargs in prefig:
             self._fig.add_trace(data, **kwargs)
-
-    def show(self):
-        self.build_fig()
-        return self.fig.show()
