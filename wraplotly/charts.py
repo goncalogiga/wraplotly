@@ -49,6 +49,32 @@ class line(draw):
 
 
 class colored_line(draw):
+    """
+    A class that can be used to color a *single* line in Plotly. This is especially usefull to
+    vizualize time series data or time series predictions.
+
+    Attributes
+    ----------
+    + df : pandas.DataFrame
+        A DataFrame containing come columns we wish to display on a line chart.
+    + x : str|list
+        Either a string specifying which column of self.df should be used as x-axis or a list that
+        will be used as the x-axis data.
+    + y : str|list
+        Either a string specifying which column of self.df should be used as y-axis or a list that
+        will be used as the y-axis data.
+    + palette: str
+        Name of palette or None to return current palette. 
+    + type: str
+        The type of the graph object.
+
+    Methods
+    -------
+    + plot()
+        Plots the line by calling the 'hidden' function __plot_fn__. It is also possible to plot the line
+        by simply having it in the last line of a jupyter's notebook cell, since the __repr__ method is implemented.
+        Both plot() and __repr__() come from the mother class draw.
+    """
     def __init__(self, df=None, x=None, y=None, color=None, palette=None, **kwargs):
         self.kwargs = kwargs
         self.df = df
