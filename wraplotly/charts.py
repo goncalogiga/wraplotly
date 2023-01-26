@@ -57,10 +57,10 @@ class colored_line(draw):
         self.color = color
 
     def __plot_fn__(self):
-        if self.df:
-            x, y, color = self.df[self.x], self.df[self.y], self.df[self.color]
-        else:
+        if self.df is None:
             x, y, color = self.x, self.y, self.color
+        else:
+            x, y, color = self.df[self.x], self.df[self.y], self.df[self.color]
 
         figures, colors_in_legend = [], set()
 
