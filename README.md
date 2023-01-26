@@ -22,7 +22,7 @@ grid.show()
 
 <img src="grid.png" width="900" height="200" />
 
-## Instalation
+## Installation
 
 ```bash
 pip3 install https://github.com/goncalogiga/wraplotly
