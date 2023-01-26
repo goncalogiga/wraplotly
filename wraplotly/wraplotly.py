@@ -14,6 +14,10 @@ class draw:
     def __plot_fn__(self):
         raise NameError("Draw object does not define a '__plot_fn__' internal method.")
 
+    @property
+    def fig(self):
+        return self.__plot_fn__()
+
     def show(self):
         self.__plot_fn__().show()
 
