@@ -67,7 +67,7 @@ class Grid(arrange):
         self.specs = [[None for j in range(self.cols)] for i in range(self.rows)]
 
         for i, line in enumerate(self.layout):
-            if len(set(line)) == 1:
+            if len(set(line)) == 1 and len(line) > 1:
                 self.specs[i] = [{"colspan": self.rows}] + [None]*(self.rows - 1)
 
         for j, column in enumerate(self.layout.T):
