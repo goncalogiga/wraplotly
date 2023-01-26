@@ -25,5 +25,5 @@ grid.show()
 ## Installation
 
 ```bash
-pip3 install https://github.com/goncalogiga/wraplotly
+pip3 install git+https://github.com/goncalogiga/wraplotly
 ```
