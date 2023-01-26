@@ -1,6 +1,6 @@
 # wraplotly
 
-A small wrapper around plotly to have easier access to some of the functions I use most when doing Data analysis.
+A small wrapper around [plotly](https://plotly.com/) to have easier access to some of the functions I use most when doing Data analysis.
 Some examples of what wraplotly offers is given in the notebook ```examples.ipynb```.
 
 A quick demonstration of how wraplotly handles subfigures for instance:
