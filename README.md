@@ -6,8 +6,8 @@ Some examples of what wraplotly offers is given in the notebook ```examples.ipyn
 A quick demonstration of how wraplotly handles subfigures for instance:
 
 ```python
-from wraplotly.grid import Grid
-from wraplotly.charts import line
+from wraplotly.arrange import Grid
+from wraplotly.draw import line
 
 grid = Grid([
     [0,1], 

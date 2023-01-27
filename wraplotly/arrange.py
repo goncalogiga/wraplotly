@@ -125,3 +125,18 @@ class Grid(arrange):
 
         for data, kwargs in prefig:
             self._fig.add_trace(data, **kwargs)
+
+
+class combine(arrange):
+    """
+    Combine drawings together
+    """
+    def __init__(self, *args):
+        self.args = args
+
+    def build_fig(self):
+        self._fig = make_subplots(rows=1, cols=1)
+
+        for object in self.args:
+            object._wraplotly_context = "go"
+            self._fig.add_trace(object.__plot_fn__(), row=1, col=1)
