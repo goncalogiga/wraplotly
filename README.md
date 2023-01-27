@@ -99,6 +99,27 @@ box(df, x="time", y="total_bill")
 
 <img src="images/box.png" width="900" height="200" />
 
+Heatmaps
+
+```python
+import plotly.express as px
+df = px.data.medals_wide(indexed=True)
+heatmap(df)
+```
+
+<img src="images/heatmap.png" width="500" height="200" />
+
+Images
+
+```python
+from skimage import io
+img = io.imread('https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Crab_Nebula.jpg/240px-Crab_Nebula.jpg')
+imshow(img)
+```
+
+<img src="images/image.png" width="200" height="200" />
+
+
 ### Arranging
 
 Horizontal stacking of figures:

@@ -258,3 +258,29 @@ class box(draw):
                           y=self.df[self.y], **self.kwargs)
         elif self._wraplotly_context == "go":
             return go.Box(x=self.x, y=self.y, **self.kwargs)
+
+
+class imshow(draw):
+    type: str = "scatter"
+    _actual_image = True
+
+    def __init__(self, data=None, **kwargs):
+        self.kwargs = kwargs
+        self.data = data
+
+    def __plot_fn__(self):
+        """
+        Returns the plotly object representing the box plot
+        """
+        if self._wraplotly_context == "px":
+            return px.imshow(self.data, **self.kwargs)
+        elif self._wraplotly_context == "go":
+            if self._actual_image:
+                return go.Image(z=self.data, **self.kwargs)
+            return go.Heatmap(z=self.data, **self.kwargs)
+
+
+# Heatmap makes more sense then imshow when using it for correlation matrices
+# and so on
+class heatmap(imshow):
+    _actual_image = False
