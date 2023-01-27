@@ -42,7 +42,7 @@ class line(draw):
         """
         if self._wraplotly_context == "px":
             return px.line(self.df, self.x, self.y, **self.kwargs)
-        elif self._wraplotly_context == "go" and self.df:
+        elif self._wraplotly_context == "go" and self.df is not None:
             return go.Scatter(x=self.df[self.x], y=self.df[self.y], **self.kwargs)
         elif self._wraplotly_context == "go":
             return go.Scatter(x=self.x, y=self.y, **self.kwargs)
