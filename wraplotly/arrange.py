@@ -127,6 +127,40 @@ class Grid(arrange):
             self._fig.add_trace(data, **kwargs)
 
 
+class vstack(arrange):
+    """
+    Stack figures verticaly
+    """
+    def __init__(self, *args):
+        self.args = args
+
+    def build_fig(self):
+        grid = Grid([[i] for i in range(len(self.args))])
+
+        for object in self.args:
+            grid(object)
+
+        grid.build_fig()
+        self._fig = grid.fig
+
+
+class hstack(arrange):
+    """
+    Stack figures horizontaly
+    """
+    def __init__(self, *args):
+        self.args = args
+
+    def build_fig(self):
+        grid = Grid([[i for i in range(len(self.args))]])
+
+        for object in self.args:
+            grid(object)
+
+        grid.build_fig()
+        self._fig = grid.fig
+
+
 class combine(arrange):
     """
     Combine drawings together
