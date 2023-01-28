@@ -119,6 +119,16 @@ imshow(img)
 
 <img src="images/image.png" width="200" height="200" />
 
+Confusion Matrix
+
+```python
+matrix = [[159, 21], [39, 75]]
+labels = ['Positive', 'Negative']
+confusion_matrix(matrix, labels)
+```
+
+<img src="images/confusion_matrix.png" width="400" height="200" />
+
 
 ### Arranging
 

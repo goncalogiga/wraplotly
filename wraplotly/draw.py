@@ -1,6 +1,7 @@
 import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.figure_factory as ff
 from wraplotly.wraplotly import draw
 
 
@@ -284,3 +285,48 @@ class imshow(draw):
 # and so on
 class heatmap(imshow):
     _actual_image = False
+
+
+class confusion_matrix(draw):
+    def __init__(self, data, labels, colorscale='Viridis', **kwargs):
+        self.kwargs = kwargs
+        self.data = data
+        self.labels = labels
+        self.colorscale = colorscale
+
+    def __plot_fn__(self):
+        """
+        Returns the plotly objects representing the confusion matrix
+        """
+        if self._wraplotly_context == "go":
+            raise RuntimeError("The confusion matrix object does not support arragements.")
+
+        x, y = self.labels, self.labels
+
+        text = [[str(y) for y in x] for x in self.data]
+
+        fig = ff.create_annotated_heatmap(self.data, x=x, y=y, annotation_text=text, 
+                                               colorscale=self.colorscale)
+
+        fig.update_layout(title_text='Confusion matrix')
+
+        fig.add_annotation(dict(font=dict(color="black",size=14),
+                                x=0.5,
+                                y=-0.15,
+                                showarrow=False,
+                                text="Predicted value",
+                                xref="paper",
+                                yref="paper"))
+
+        fig.add_annotation(dict(font=dict(color="black",size=14),
+                                x=-0.35,
+                                y=0.5,
+                                showarrow=False,
+                                text="Real value",
+                                textangle=-90,
+                                xref="paper",
+                                yref="paper"))
+
+        fig.update_layout(margin=dict(t=50, l=500, r=500))
+
+        return fig
