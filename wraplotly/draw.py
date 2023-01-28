@@ -288,10 +288,11 @@ class heatmap(imshow):
 
 
 class confusion(draw):
-    def __init__(self, data, labels, colorscale='Viridis', **kwargs):
+    def __init__(self, data, labels, margin=dict(t=50, l=500, r=500), colorscale='Viridis', **kwargs):
         self.kwargs = kwargs
         self.data = data
         self.labels = labels
+        self.margin = margin
         self.colorscale = colorscale
 
     def __plot_fn__(self):
@@ -327,6 +328,6 @@ class confusion(draw):
                                 xref="paper",
                                 yref="paper"))
 
-        fig.update_layout(margin=dict(t=50, l=500, r=500))
+        fig.update_layout(margin=self.margin)
 
         return fig
