@@ -287,7 +287,7 @@ class heatmap(imshow):
     _actual_image = False
 
 
-class confusion_matrix(draw):
+class confusion(draw):
     def __init__(self, data, labels, colorscale='Viridis', **kwargs):
         self.kwargs = kwargs
         self.data = data

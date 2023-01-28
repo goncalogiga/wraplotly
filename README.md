@@ -124,7 +124,7 @@ Confusion Matrix
 ```python
 matrix = [[159, 21], [39, 75]]
 labels = ['Positive', 'Negative']
-confusion_matrix(matrix, labels)
+confusion(matrix, labels)
 ```
 
 <img src="images/confusion_matrix.png" width="400" height="200" />
