@@ -11,6 +11,10 @@ such like Grid.
 class draw:
     _wraplotly_context: str = "px" # default is plotly express (easier to use)
 
+    def __px_to_go_bad_conversion_errors__(self):
+        if "name" in self.kwargs:
+            raise ValueError("Key argument 'name' should not be used outside of arrange methods. Use 'title' instead.")
+
     def __plot_fn__(self):
         raise NameError("Draw object does not define a '__plot_fn__' internal method.")
 

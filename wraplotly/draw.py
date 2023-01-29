@@ -52,6 +52,7 @@ class scatter(draw):
         Returns the plotly object representing the line
         """
         if self._wraplotly_context == "px":
+            self.__px_to_go_bad_conversion_errors__()
             return px.scatter(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
             return go.Scatter(x=self.df[self.x], y=self.df[self.y], mode="markers", **self.kwargs)
@@ -106,9 +107,7 @@ class line(draw):
         Returns the plotly object representing the line
         """
         if self._wraplotly_context == "px":
-            if "name" in self.kwargs:
-                raise ValueError("Key argument 'name' should not be used outside of arrange methods. Use 'title' instead.")
-
+            self.__px_to_go_bad_conversion_errors__()
             return px.line(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
             return go.Scatter(x=self.df[self.x], y=self.df[self.y], **self.kwargs)
@@ -232,6 +231,7 @@ class bar(draw):
         Returns the plotly object representing the bar
         """
         if self._wraplotly_context == "px":
+            self.__px_to_go_bad_conversion_errors__()
             return px.bar(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
             return go.Bar(x=self.df[self.x], y=self.df[self.y], **self.kwargs)
@@ -276,6 +276,7 @@ class box(draw):
         Returns the plotly object representing the box plot
         """
         if self._wraplotly_context == "px":
+            self.__px_to_go_bad_conversion_errors__()
             return px.box(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
             return go.Box(x=self.df[self.x] if self.x is not None else None, 
@@ -297,6 +298,7 @@ class imshow(draw):
         Returns the plotly object representing the box plot
         """
         if self._wraplotly_context == "px":
+            self.__px_to_go_bad_conversion_errors__()
             return px.imshow(img=self.data, **self.kwargs)
         elif self._wraplotly_context == "go":
             if self._actual_image:
