@@ -40,7 +40,7 @@ class scatter(draw):
             x = df
             df = None
         if df is not None and x is None and y is None:
-            x = df
+            y = df
             df = None
 
         self.df = df
@@ -95,7 +95,7 @@ class line(draw):
             x = df
             df = None
         if df is not None and x is None and y is None:
-            x = df
+            y = df
             df = None
 
         self.df = df
