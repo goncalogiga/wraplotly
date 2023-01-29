@@ -33,6 +33,16 @@ class scatter(draw):
 
     def __init__(self, df=None, x=None, y=None, **kwargs):
         self.kwargs = kwargs
+
+        # In order to call line without a dataframe in arragements
+        if df is not None and x is not None and y is None:
+            y = x
+            x = df
+            df = None
+        if df is not None and x is None and y is None:
+            x = df
+            df = None
+
         self.df = df
         self.x = x
         self.y = y
@@ -42,7 +52,7 @@ class scatter(draw):
         Returns the plotly object representing the line
         """
         if self._wraplotly_context == "px":
-            return px.scatter(self.df, self.x, self.y, **self.kwargs)
+            return px.scatter(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
             return go.Scatter(x=self.df[self.x], y=self.df[self.y], mode="markers", **self.kwargs)
         elif self._wraplotly_context == "go":
@@ -77,6 +87,16 @@ class line(draw):
 
     def __init__(self, df=None, x=None, y=None, **kwargs):
         self.kwargs = kwargs
+
+        # In order to call line without a dataframe in arragements
+        if df is not None and x is not None and y is None:
+            y = x
+            x = df
+            df = None
+        if df is not None and x is None and y is None:
+            x = df
+            df = None
+
         self.df = df
         self.x = x
         self.y = y
@@ -86,7 +106,10 @@ class line(draw):
         Returns the plotly object representing the line
         """
         if self._wraplotly_context == "px":
-            return px.line(self.df, self.x, self.y, **self.kwargs)
+            if "name" in self.kwargs:
+                raise ValueError("Key argument 'name' should not be used outside of arrange methods. Use 'title' instead.")
+
+            return px.line(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
             return go.Scatter(x=self.df[self.x], y=self.df[self.y], **self.kwargs)
         elif self._wraplotly_context == "go":
@@ -209,7 +232,7 @@ class bar(draw):
         Returns the plotly object representing the bar
         """
         if self._wraplotly_context == "px":
-            return px.bar(self.df, self.x, self.y, **self.kwargs)
+            return px.bar(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
             return go.Bar(x=self.df[self.x], y=self.df[self.y], **self.kwargs)
         elif self._wraplotly_context == "go":
@@ -253,7 +276,7 @@ class box(draw):
         Returns the plotly object representing the box plot
         """
         if self._wraplotly_context == "px":
-            return px.box(self.df, self.x, self.y, **self.kwargs)
+            return px.box(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
             return go.Box(x=self.df[self.x] if self.x is not None else None, 
                           y=self.df[self.y], **self.kwargs)
@@ -274,7 +297,7 @@ class imshow(draw):
         Returns the plotly object representing the box plot
         """
         if self._wraplotly_context == "px":
-            return px.imshow(self.data, **self.kwargs)
+            return px.imshow(img=self.data, **self.kwargs)
         elif self._wraplotly_context == "go":
             if self._actual_image:
                 return go.Image(z=self.data, **self.kwargs)
@@ -306,7 +329,7 @@ class confusion(draw):
 
         text = [[str(y) for y in x] for x in self.data]
 
-        fig = ff.create_annotated_heatmap(self.data, x=x, y=y, annotation_text=text, 
+        fig = ff.create_annotated_heatmap(z=self.data, x=x, y=y, annotation_text=text, 
                                                colorscale=self.colorscale)
 
         fig.update_layout(title_text='Confusion matrix')

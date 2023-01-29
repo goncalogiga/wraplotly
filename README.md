@@ -60,7 +60,7 @@ line(df, x='x', y='y')
 
 <img src="images/simple_line_df.png" width="900" height="200" />
 
-*Note*: We will now omit this 'dataframe method', but it can be used in each of the following drawing methods.
+*Note*: We will now omit this 'dataframe method', but it can be used in each of the following drawing methods. Note that it is also possible to simply call ```line([1,2,3])``` to omit trivial x-axis.
 
 Colored line
 
