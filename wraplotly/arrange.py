@@ -121,9 +121,9 @@ class grid(arrange):
                     raise ValueError(f"More than one type in object collection (grid index '{obj_idx}').")
                 
                 if self.specs and self.specs[i][j] is None:
-                    self.specs[i][j] = {"type": list(objects_type)[0]}
+                    self.specs[i][j] = {"type": list(objects_type)[0][0]}
                 elif self.specs and self.specs[i][j]:
-                    self.specs[i][j]["type"] = list(objects_type)[0]
+                    self.specs[i][j]["type"] = list(objects_type)[0][0]
                 
                 used_objects_indexes.add(obj_idx)
 
