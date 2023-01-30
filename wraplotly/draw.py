@@ -96,6 +96,8 @@ class line(draw):
         if self._wraplotly_context == "px":
             self.__px_to_go_bad_conversion_errors__()
             return px.line(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
+        elif self._wraplotly_context == "go" and self.df is not None and self.x is None:
+            return [go.Scatter(x=list(range(len(self.df[self.y]))), y=self.df[self.y], **self.kwargs)]
         elif self._wraplotly_context == "go" and self.df is not None:
             return [go.Scatter(x=self.df[self.x], y=self.df[self.y], **self.kwargs)]
         elif self._wraplotly_context == "go":
