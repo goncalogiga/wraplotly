@@ -138,6 +138,23 @@ wp.histogram(df, x="sex", y="total_bill", color="sex", pattern_shape="smoker")
 
 <img src="images/histogram.png" width="900" height="250" />
 
+Count Plot
+
+```python
+import pandas as pd
+
+# Some dummy dataset
+df = pd.DataFrame(
+    {
+        "Name": ["User1", "User1", "User1", "User2"],
+        "Defect severity": ["Medium", "Medium", "High", "High"],
+    }
+)
+wp.countplot(df, x="Name", hue="Defect severity")
+```
+
+<img src="images/count_plot.png" width="900" height="250" />
+
 
 ### Arranging
 
