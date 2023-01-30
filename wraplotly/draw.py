@@ -454,7 +454,6 @@ class countplot(draw):
 
     def __plot_fn__(self):
         df = self.df.groupby(by=[self.x, self.hue]).size().reset_index(name="counts")
-        print(df)
         if self._wraplotly_context == "px":
             return px.bar(data_frame=df, x=self.x, y="counts", color=self.hue, barmode="group")
         elif self._wraplotly_context == "go":
