@@ -1,9 +1,9 @@
 import numpy as np
 from plotly.subplots import make_subplots
-from wraplotly.wraplotly import arrange
+from wraplotly.base import arrange
 
 
-class Grid(arrange):
+class grid(arrange):
     """
     A class used to create grids in Plotly whitout using the usual subfigures method.
 
@@ -84,7 +84,7 @@ class Grid(arrange):
         calls matters. It is linked to the indexes that were defined in the layout (during class construction).
         """
         if self.object_cnt > self.nb_of_objs:
-            raise RuntimeError(f"Too many objects added to Grid. Maximum calls available is {self.nb_of_objs}.")
+            raise RuntimeError(f"Too many objects added to grid. Maximum calls available is {self.nb_of_objs}.")
             
         self.objects[self.object_cnt] = obj
         self.object_cnt += 1
@@ -135,13 +135,13 @@ class vstack(arrange):
         self.args = args
 
     def build_fig(self):
-        grid = Grid([[i] for i in range(len(self.args))])
+        g = grid([[i] for i in range(len(self.args))])
 
         for object in self.args:
-            grid(object)
+            g(object)
 
-        grid.build_fig()
-        self._fig = grid.fig
+        g.build_fig()
+        self._fig = g.fig
 
 
 class hstack(arrange):
@@ -152,13 +152,13 @@ class hstack(arrange):
         self.args = args
 
     def build_fig(self):
-        grid = Grid([[i for i in range(len(self.args))]])
+        g = grid([[i for i in range(len(self.args))]])
 
         for object in self.args:
-            grid(object)
+            g(object)
 
-        grid.build_fig()
-        self._fig = grid.fig
+        g.build_fig()
+        self._fig = g.fig
 
 
 class combine(arrange):

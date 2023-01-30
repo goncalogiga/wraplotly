@@ -11,6 +11,17 @@ such like Grid.
 class draw:
     _wraplotly_context: str = "px" # default is plotly express (easier to use)
 
+    def __prepare_2d_plot_args__(self, df, x, y):
+        # In order to call line without a dataframe in arragements
+        if df is not None and x is not None and y is None:
+            y = x
+            x = df
+            df = None
+        if df is not None and x is None and y is None:
+            y = df
+            df = None
+        return df, x, y
+
     def __px_to_go_bad_conversion_errors__(self):
         if "name" in self.kwargs:
             raise ValueError("Key argument 'name' should not be used outside of arrange methods. Use 'title' instead.")
@@ -38,7 +49,7 @@ class arrange:
     @property
     def fig(self):
         if self._fig is None:
-            raise RuntimeError("Figure (fig) is not yet built. Please run the method build_fig() before accessing the 'fig' object.")
+            self.build_fig()
         return self._fig
 
     def show(self):

@@ -2,7 +2,7 @@ import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
-from wraplotly.wraplotly import draw
+from wraplotly.base import draw
 
 
 class scatter(draw):
@@ -34,14 +34,7 @@ class scatter(draw):
     def __init__(self, df=None, x=None, y=None, **kwargs):
         self.kwargs = kwargs
 
-        # In order to call line without a dataframe in arragements
-        if df is not None and x is not None and y is None:
-            y = x
-            x = df
-            df = None
-        if df is not None and x is None and y is None:
-            y = df
-            df = None
+        df, x, y = self.__prepare_2d_plot_args__(df, x, y)
 
         self.df = df
         self.x = x
@@ -89,14 +82,7 @@ class line(draw):
     def __init__(self, df=None, x=None, y=None, **kwargs):
         self.kwargs = kwargs
 
-        # In order to call line without a dataframe in arragements
-        if df is not None and x is not None and y is None:
-            y = x
-            x = df
-            df = None
-        if df is not None and x is None and y is None:
-            y = df
-            df = None
+        df, x, y = self.__prepare_2d_plot_args__(df, x, y)
 
         self.df = df
         self.x = x
