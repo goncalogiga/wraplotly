@@ -128,6 +128,16 @@ wp.confusion(matrix, labels)
 
 <img src="images/confusion_matrix.png" width="400" height="200" />
 
+Histogram
+
+```python
+import plotly.express as px
+df = px.data.tips()
+wp.histogram(df, x="sex", y="total_bill", color="sex", pattern_shape="smoker")
+```
+
+<img src="images/histogram.png" width="900" height="250" />
+
 
 ### Arranging
 

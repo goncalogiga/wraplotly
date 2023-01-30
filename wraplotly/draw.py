@@ -225,6 +225,53 @@ class bar(draw):
             return go.Bar(x=self.x, y=self.y, **self.kwargs)
 
 
+class histogram(draw):
+    """
+    A class grouping plotly express' histogram and plotly graph_objects' Histogram.
+
+    Attributes
+    ----------
+    + df : pandas.DataFrame
+        A DataFrame containing come columns we wish to display on a line chart.
+    + x : str|list
+        Either a string specifying which column of self.df should be used as x-axis or a list that
+        will be used as the x-axis data.
+    + y : str|list
+        Either a string specifying which column of self.df should be used as y-axis or a list that
+        will be used as the y-axis data.
+    + type: str
+        The type of the graph object.
+
+    Methods
+    -------
+    + plot()
+        Plots the line by calling the 'hidden' function __plot_fn__. It is also possible to plot the line
+        by simply having it in the last line of a jupyter's notebook cell, since the __repr__ method is implemented.
+        Both plot() and __repr__() come from the mother class draw.
+    """
+    type: str = "scatter"
+
+    def __init__(self, df=None, x=None, y=None, **kwargs):
+        self.kwargs = kwargs
+        self.df = df
+        self.x = x
+        self.y = y
+
+    def __plot_fn__(self):
+        """
+        Returns the plotly object representing the box plot
+        """
+        if self._wraplotly_context == "px":
+            self.__px_to_go_bad_conversion_errors__()
+            return px.histogram(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
+        elif self._wraplotly_context == "go" and self.df is not None:
+            return go.Histogram(x=self.df[self.x] if self.x is not None else None, 
+                          y=self.df[self.y], **self.kwargs)
+        elif self._wraplotly_context == "go":
+            return go.Histogram(x=self.x, y=self.y, **self.kwargs)
+
+
+
 class box(draw):
     """
     A class grouping plotly express' box and plotly graph_objects' Box.
