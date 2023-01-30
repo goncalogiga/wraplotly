@@ -111,7 +111,7 @@ class grid(arrange):
                     obj._wraplotly_context = "go"
 
                 prefig.append((
-                    [obj.__plot_fn__() for obj in self.objects[obj_idx]], 
+                    [obj for objects in self.objects[obj_idx] for obj in objects.__plot_fn__()], 
                     {"row": i+1, "col": j+1}
                 ))
 
@@ -186,4 +186,5 @@ class combine(arrange):
 
         for object in self.args:
             object._wraplotly_context = "go"
-            self._fig.add_trace(object.__plot_fn__(), row=1, col=1)
+            for obj in object.__plot_fn__():
+                self._fig.add_trace(obj, row=1, col=1)

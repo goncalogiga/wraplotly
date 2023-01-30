@@ -1,3 +1,4 @@
+import warnings
 import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
@@ -48,9 +49,9 @@ class scatter(draw):
             self.__px_to_go_bad_conversion_errors__()
             return px.scatter(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
-            return go.Scatter(x=self.df[self.x], y=self.df[self.y], mode="markers", **self.kwargs)
+            return [go.Scatter(x=self.df[self.x], y=self.df[self.y], mode="markers", **self.kwargs)]
         elif self._wraplotly_context == "go":
-            return go.Scatter(x=self.x, y=self.y, mode="markers", **self.kwargs)
+            return [go.Scatter(x=self.x, y=self.y, mode="markers", **self.kwargs)]
 
 
 class line(draw):
@@ -96,9 +97,9 @@ class line(draw):
             self.__px_to_go_bad_conversion_errors__()
             return px.line(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
-            return go.Scatter(x=self.df[self.x], y=self.df[self.y], **self.kwargs)
+            return [go.Scatter(x=self.df[self.x], y=self.df[self.y], **self.kwargs)]
         elif self._wraplotly_context == "go":
-            return go.Scatter(x=self.x, y=self.y, **self.kwargs)
+            return [go.Scatter(x=self.x, y=self.y, **self.kwargs)]
 
 
 class colored_line(draw):
@@ -140,6 +141,9 @@ class colored_line(draw):
         """
         Returns the plotly object representing the colored line (arragement of different line traces)
         """
+        if self._wraplotly_context == "go":
+            raise RuntimeError("The colored_line object does not support arragements.")
+
         if self.df is None:
             x, y, color = self.x, self.y, self.color
         else:
@@ -220,9 +224,9 @@ class bar(draw):
             self.__px_to_go_bad_conversion_errors__()
             return px.bar(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
-            return go.Bar(x=self.df[self.x], y=self.df[self.y], **self.kwargs)
+            return [go.Bar(x=self.df[self.x], y=self.df[self.y], **self.kwargs)]
         elif self._wraplotly_context == "go":
-            return go.Bar(x=self.x, y=self.y, **self.kwargs)
+            return [go.Bar(x=self.x, y=self.y, **self.kwargs)]
 
 
 class histogram(draw):
@@ -251,10 +255,41 @@ class histogram(draw):
     """
     type: str = "scatter"
 
-    def __init__(self, df=None, x=None, **kwargs):
+    def __init__(self, df=None, x=None, y=None, color=None, **kwargs):
         self.kwargs = kwargs
         self.df = df
         self.x = x
+        self.y = y
+        self.color = color
+
+    def __go_Histogram__(self):
+        if self.df is None:
+            raise ValueError("Histogram can only be arranged if a dataframe is given.")
+
+        if self.x is not None and self.y is not None:
+            if len(set(self.df[self.x])) < len(set(self.df[self.y])):
+                groupby, values, orientation = self.x, self.y, None
+            else:
+                groupby, values, orientation = self.y, self.x, 'h'
+
+            gb_sum = self.df.groupby(groupby).sum()[values]
+
+            if self.color is not None:
+                if self.color != groupby:
+                    warnings.warn("Color different from x-axis column is not supported in arragements.")
+                if orientation:
+                    warnings.warn("Arragement of histograms does not support other orientations.")
+                    
+                color = self.df[groupby]
+                return [go.Bar(x=[c], y=[x], name=c, **self.kwargs) for x, c in zip(gb_sum, set(color))]
+            elif orientation:
+                return [go.Bar(x=gb_sum, y=self.df[groupby], orientation=orientation, **self.kwargs)]
+            else:
+                return [go.Bar(x=self.df[groupby], y=gb_sum, orientation=orientation, **self.kwargs)]
+
+        if self.x is not None and self.y is None:
+            return [go.Histogram(x=self.df[self.x], **self.kwargs)]
+        return [go.Histogram(y=self.df[self.y], **self.kwargs)]
 
     def __plot_fn__(self):
         """
@@ -262,11 +297,9 @@ class histogram(draw):
         """
         if self._wraplotly_context == "px":
             self.__px_to_go_bad_conversion_errors__()
-            return px.histogram(data_frame=self.df, x=self.x, **self.kwargs)
-        elif self._wraplotly_context == "go" and self.df is not None:
-            return go.Histogram(x=self.df[self.x] if self.x is not None else None, **self.kwargs)
+            return px.histogram(data_frame=self.df, x=self.x, y=self.y, color=self.color, **self.kwargs)
         elif self._wraplotly_context == "go":
-            return go.Histogram(x=self.x, **self.kwargs)
+            return self.__go_Histogram__()
 
 
 
@@ -310,10 +343,10 @@ class box(draw):
             self.__px_to_go_bad_conversion_errors__()
             return px.box(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
-            return go.Box(x=self.df[self.x] if self.x is not None else None, 
-                          y=self.df[self.y], **self.kwargs)
+            return [go.Box(x=self.df[self.x] if self.x is not None else None, 
+                          y=self.df[self.y], **self.kwargs)]
         elif self._wraplotly_context == "go":
-            return go.Box(x=self.x, y=self.y, **self.kwargs)
+            return [go.Box(x=self.x, y=self.y, **self.kwargs)]
 
 
 class imshow(draw):
@@ -333,8 +366,8 @@ class imshow(draw):
             return px.imshow(img=self.data, **self.kwargs)
         elif self._wraplotly_context == "go":
             if self._actual_image:
-                return go.Image(z=self.data, **self.kwargs)
-            return go.Heatmap(z=self.data, **self.kwargs)
+                return [go.Image(z=self.data, **self.kwargs)]
+            return [go.Heatmap(z=self.data, **self.kwargs)]
 
 
 # Heatmap makes more sense then imshow when using it for correlation matrices
