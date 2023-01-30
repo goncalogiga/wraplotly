@@ -251,11 +251,10 @@ class histogram(draw):
     """
     type: str = "scatter"
 
-    def __init__(self, df=None, x=None, y=None, **kwargs):
+    def __init__(self, df=None, x=None, **kwargs):
         self.kwargs = kwargs
         self.df = df
         self.x = x
-        self.y = y
 
     def __plot_fn__(self):
         """
@@ -263,12 +262,11 @@ class histogram(draw):
         """
         if self._wraplotly_context == "px":
             self.__px_to_go_bad_conversion_errors__()
-            return px.histogram(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
+            return px.histogram(data_frame=self.df, x=self.x, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
-            return go.Histogram(x=self.df[self.x] if self.x is not None else None, 
-                          y=self.df[self.y], **self.kwargs)
+            return go.Histogram(x=self.df[self.x] if self.x is not None else None, **self.kwargs)
         elif self._wraplotly_context == "go":
-            return go.Histogram(x=self.x, y=self.y, **self.kwargs)
+            return go.Histogram(x=self.x, **self.kwargs)
 
 
 
