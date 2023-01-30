@@ -46,6 +46,9 @@ class arrange:
     def build_fig(self):
         raise NameError("Arrange object does not define a 'build_fig' method.")
 
+    def __plot_fn__(self):
+        self.build_fig(); return self._fig
+
     @property
     def fig(self):
         if self._fig is None:

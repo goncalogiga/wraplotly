@@ -7,10 +7,12 @@ class grid(arrange):
     """
     A class used to create grids in Plotly whitout using the usual subfigures method.
 
-    In order to create a Grid you have to define one with a given layout a populate it
-    by calling this class. Example:
+    In order to create a grid you have to define one with a given layout a populate it
+    by calling this class.
+    
+    Usage:
 
-    grid = Grid([
+    grid = wp.grid([
         [0,1], 
         [0,2]
     ])
@@ -19,6 +21,7 @@ class grid(arrange):
     grid(line(x=[1,2,3], y=[12,12,5], name="Test 2"))
     grid(line(x=[1,2,3], y=[-1,-1,5], name="Test 3"))
     grid.show()
+
 
     Attributes
     ----------
@@ -78,7 +81,7 @@ class grid(arrange):
                     else:
                         self.specs[i][j] = None
 
-    def __call__(self, obj):
+    def __call__(self, *objects):
         """
         Adds a subplot. Every call to this class increases a counter (object_cnt) so the order
         calls matters. It is linked to the indexes that were defined in the layout (during class construction).
@@ -86,7 +89,7 @@ class grid(arrange):
         if self.object_cnt > self.nb_of_objs:
             raise RuntimeError(f"Too many objects added to grid. Maximum calls available is {self.nb_of_objs}.")
             
-        self.objects[self.object_cnt] = obj
+        self.objects[self.object_cnt] = list(objects)
         self.object_cnt += 1
 
     def build_fig(self):
@@ -103,15 +106,24 @@ class grid(arrange):
                 if obj_idx in used_objects_indexes:
                     continue
 
-                obj = self.objects[obj_idx]
-                obj._wraplotly_context = "go"
+                objects = self.objects[obj_idx]
+                for obj in objects:
+                    obj._wraplotly_context = "go"
 
-                prefig.append((self.objects[obj_idx].__plot_fn__(), {"row": i+1, "col": j+1}))
+                prefig.append((
+                    [obj.__plot_fn__() for obj in self.objects[obj_idx]], 
+                    {"row": i+1, "col": j+1}
+                ))
+
+                objects_type = set(obj.type for obj in self.objects[obj_idx])
+
+                if len(objects_type) > 1:
+                    raise ValueError(f"More than one type in object collection (grid index '{obj_idx}').")
                 
                 if self.specs and self.specs[i][j] is None:
-                    self.specs[i][j] = {"type": self.objects[obj_idx].type}
+                    self.specs[i][j] = {"type": list(objects_type)[0]}
                 elif self.specs and self.specs[i][j]:
-                    self.specs[i][j]["type"] = self.objects[obj_idx].type
+                    self.specs[i][j]["type"] = list(objects_type)[0]
                 
                 used_objects_indexes.add(obj_idx)
 
@@ -123,8 +135,9 @@ class grid(arrange):
             specs=self.specs
         )
 
-        for data, kwargs in prefig:
-            self._fig.add_trace(data, **kwargs)
+        for objects, kwargs in prefig:
+            for obj in objects:
+                self._fig.add_trace(obj, **kwargs)
 
 
 class vstack(arrange):

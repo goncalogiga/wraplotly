@@ -167,7 +167,7 @@ wp.combine(
 
 <img src="images/combine.png" width="900" height="200" />
 
-Grid
+grid
 
 ```python
 grid = wp.grid([
@@ -182,3 +182,18 @@ grid.show()
 ```
 
 <img src="images/grid.png" width="900" height="200" />
+
+grid with the first line combined
+
+```python
+grid = wp.grid([
+    [0],
+    [1]
+])
+
+grid(wp.line([0,1,3], name="Combined 1"), wp.line([3,2,5], name="Combined 2"))
+grid(wp.line([5,6,5], name="Bellow"))
+grid.show()
+```
+
+<img src="images/grid_combined.png" width="900" height="250" />
