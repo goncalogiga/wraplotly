@@ -6,6 +6,27 @@ The class draw is used for classes that directly plot graphs like line.
 The class arrange is used for classes that arrange plots in a certain way,
 such like Grid.
 """
+import pandas
+import warnings
+import numpy as np
+
+
+""" === some helper function """
+def count_nans_in_df_and_alert(df, x):
+    c = df[x].isna().sum()
+
+    if c >= 1:
+        warnings.warn(f"Column '{x}' of the passed dataframe contains {c} occurence(s) of NaN. This might result in faulty plots.")
+
+def count_nans_and_alert(l, arg):
+    if isinstance(l, str):
+        return 
+    if isinstance(l, pandas.core.frame.DataFrame):
+        l = l.values.tolist()
+    
+    c = np.count_nonzero(np.isnan(np.array(l)))
+    if c >= 1:
+        warnings.warn(f"Argument '{arg}' contains {c} occurence(s) of NaN. This might result in faulty plots.")
 
 
 class draw:
@@ -21,6 +42,18 @@ class draw:
             y = df
             df = None
         return df, x, y
+
+    def __check_for_nans__(self):
+        if self.df is not None:
+            if self.x is not None:
+                count_nans_in_df_and_alert(self.df, self.x)
+            if self.y is not None:
+                count_nans_in_df_and_alert(self.df, self.y)
+        else:
+            if self.x is not None:
+                count_nans_and_alert(self.x, 'x')
+            if self.y is not None:
+                count_nans_and_alert(self.y, 'y')
 
     def __px_to_go_bad_conversion_errors__(self):
         if "name" in self.kwargs:

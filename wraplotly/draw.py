@@ -40,6 +40,7 @@ class scatter(draw):
         self.df = df
         self.x = x
         self.y = y
+        self.__check_for_nans__()
 
     def __plot_fn__(self):
         """
@@ -81,6 +82,9 @@ class line(draw):
     type: str = "scatter"
 
     def __init__(self, df=None, x=None, y=None, **kwargs):
+        if y is None and df is not None and x is not None:
+            raise ValueError("line object cannot only infer the x-axis not the y-axis. Please use y=... instead of x=...")
+        
         self.kwargs = kwargs
 
         df, x, y = self.__prepare_2d_plot_args__(df, x, y)
@@ -88,6 +92,7 @@ class line(draw):
         self.df = df
         self.x = x
         self.y = y
+        self.__check_for_nans__()
 
     def __plot_fn__(self):
         """
@@ -138,6 +143,7 @@ class colored_line(draw):
         self.y = y
         self.color = color
         self.palette = palette
+        self.__check_for_nans__()
 
     def __plot_fn__(self):
         """
@@ -217,6 +223,7 @@ class bar(draw):
         self.df = df
         self.x = x
         self.y = y
+        self.__check_for_nans__()
 
     def __plot_fn__(self):
         """
@@ -263,6 +270,7 @@ class histogram(draw):
         self.x = x
         self.y = y
         self.color = color
+        self.__check_for_nans__()
 
     def __go_Histogram__(self):
         if self.df is None:
@@ -336,6 +344,7 @@ class box(draw):
         self.df = df
         self.x = x
         self.y = y
+        self.__check_for_nans__()
 
     def __plot_fn__(self):
         """

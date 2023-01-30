@@ -4,10 +4,10 @@ import setuptools
 
 setuptools.setup(
     name='wraplotly',
-    version='1.1',
+    version='1.2',
     description='A small wrapper around plotly to have easier access to some of the functions I use most when doing data anlysis.',
     license='MIT',
     packages=['wraplotly'],
-    install_requires=['numpy', 'plotly', 'seaborn'],
+    install_requires=['numpy', 'plotly', 'seaborn', 'pandas'],
     python_requires='>=3.6',
 )
