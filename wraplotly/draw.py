@@ -13,7 +13,7 @@ class scatter(draw):
     Attributes
     ----------
     + df : pandas.DataFrame
-        A DataFrame containing come columns we wish to display on a line chart.
+        A DataFrame containing some columns we wish to display on a line chart.
     + x : str|list
         Either a string specifying which column of self.df should be used as x-axis or a list that
         will be used as the x-axis data.
@@ -61,7 +61,7 @@ class line(draw):
     Attributes
     ----------
     + df : pandas.DataFrame
-        A DataFrame containing come columns we wish to display on a line chart.
+        A DataFrame containing some columns we wish to display on a line chart.
     + x : str|list
         Either a string specifying which column of self.df should be used as x-axis or a list that
         will be used as the x-axis data.
@@ -110,7 +110,7 @@ class colored_line(draw):
     Attributes
     ----------
     + df : pandas.DataFrame
-        A DataFrame containing come columns we wish to display on a line chart.
+        A DataFrame containing some columns we wish to display on a line chart.
     + x : str|list
         Either a string specifying which column of self.df should be used as x-axis or a list that
         will be used as the x-axis data.
@@ -191,7 +191,7 @@ class bar(draw):
     Attributes
     ----------
     + df : pandas.DataFrame
-        A DataFrame containing come columns we wish to display on a line chart.
+        A DataFrame containing some columns we wish to display on a line chart.
     + x : str|list
         Either a string specifying which column of self.df should be used as x-axis or a list that
         will be used as the x-axis data.
@@ -236,7 +236,7 @@ class histogram(draw):
     Attributes
     ----------
     + df : pandas.DataFrame
-        A DataFrame containing come columns we wish to display on a line chart.
+        A DataFrame containing some columns we wish to display on a line chart.
     + x : str|list
         Either a string specifying which column of self.df should be used as x-axis or a list that
         will be used as the x-axis data.
@@ -279,7 +279,7 @@ class histogram(draw):
                     warnings.warn("Color different from x-axis column is not supported in arragements.")
                 if orientation:
                     warnings.warn("Arragement of histograms does not support other orientations.")
-                    
+
                 color = self.df[groupby]
                 return [go.Bar(x=[c], y=[x], name=c, **self.kwargs) for x, c in zip(gb_sum, set(color))]
             elif orientation:
@@ -299,7 +299,7 @@ class histogram(draw):
             self.__px_to_go_bad_conversion_errors__()
             return px.histogram(data_frame=self.df, x=self.x, y=self.y, color=self.color, **self.kwargs)
         elif self._wraplotly_context == "go":
-            return self.__go_Histogram__()
+            raise Exception("Histogram object is not yet ready to be inside arragements :(")
 
 
 
@@ -310,7 +310,7 @@ class box(draw):
     Attributes
     ----------
     + df : pandas.DataFrame
-        A DataFrame containing come columns we wish to display on a line chart.
+        A DataFrame containing some columns we wish to display on a line chart.
     + x : str|list
         Either a string specifying which column of self.df should be used as x-axis or a list that
         will be used as the x-axis data.
@@ -420,3 +420,42 @@ class confusion(draw):
         fig.update_layout(margin=self.margin)
 
         return fig
+
+
+class countplot(draw):
+    """
+    A class that mimics the behavior of seaborn 'countplot' function.
+
+    Attributes
+    ----------
+    + df : pandas.DataFrame
+        A DataFrame containing some columns we wish to display on a line chart.
+    + x : str|list
+        Either a string specifying which column of self.df should be used as x-axis or a list that
+        will be used as the x-axis data.
+    + hue: 
+        ... TODO
+    + type: str
+        The type of the graph object.
+
+    Methods
+    -------
+    + plot()
+        Plots the line by calling the 'hidden' function __plot_fn__. It is also possible to plot the line
+        by simply having it in the last line of a jupyter's notebook cell, since the __repr__ method is implemented.
+        Both plot() and __repr__() come from the mother class draw.
+    """
+    type: str = "scatter"
+
+    def __init__(self, df, x, hue):
+        self.x = x
+        self.df = df
+        self.hue = hue
+
+    def __plot_fn__(self):
+        df = self.df.groupby(by=[self.x, self.hue]).size().reset_index(name="counts")
+        print(df)
+        if self._wraplotly_context == "px":
+            return px.bar(data_frame=df, x=self.x, y="counts", color=self.hue, barmode="group")
+        elif self._wraplotly_context == "go":
+            return [go.Bar(x=df[df[self.hue] == c][self.x], y=df[df[self.hue] == c]["counts"], name=c) for c in set(df[self.hue])]
