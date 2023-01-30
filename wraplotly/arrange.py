@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 from plotly.subplots import make_subplots
 from wraplotly.base import arrange
@@ -67,12 +68,12 @@ class grid(arrange):
         """
         Builds the specs argument that will be passed to make_subplots
         """
-        self.specs = [[None for j in range(self.cols)] for i in range(self.rows)]
+        self.specs = [[None for _ in range(self.cols)] for _ in range(self.rows)]
 
         for i, line in enumerate(self.layout):
             if len(set(line)) == 1 and len(line) > 1:
-                self.specs[i] = [{"colspan": self.rows}] + [None]*(self.rows - 1)
-
+                self.specs[i] = [{"colspan": self.cols}] + [None]*(self.cols - 1)
+        
         for j, column in enumerate(self.layout.T):
             if len(set(column)) == 1:
                 for i in range(self.rows): 
@@ -86,7 +87,7 @@ class grid(arrange):
         Adds a subplot. Every call to this class increases a counter (object_cnt) so the order
         calls matters. It is linked to the indexes that were defined in the layout (during class construction).
         """
-        if self.object_cnt > self.nb_of_objs:
+        if self.object_cnt >= self.nb_of_objs:
             raise RuntimeError(f"Too many objects added to grid. Maximum calls available is {self.nb_of_objs}.")
             
         self.objects[self.object_cnt] = list(objects)
@@ -96,6 +97,9 @@ class grid(arrange):
         """
         Builds the fig object containing the grid.
         """
+        if self.object_cnt != self.nb_of_objs:
+            raise RuntimeError(f"Not enough objects in grid (expected '{self.nb_of_objs}', got '{self.object_cnt}' instead).")
+
         prefig = []
         used_objects_indexes = set()
 
@@ -121,9 +125,9 @@ class grid(arrange):
                     raise ValueError(f"More than one type in object collection (grid index '{obj_idx}').")
                 
                 if self.specs and self.specs[i][j] is None:
-                    self.specs[i][j] = {"type": list(objects_type)[0][0]}
+                    self.specs[i][j] = {"type": list(objects_type)[0]}
                 elif self.specs and self.specs[i][j]:
-                    self.specs[i][j]["type"] = list(objects_type)[0][0]
+                    self.specs[i][j]["type"] = list(objects_type)[0]
                 
                 used_objects_indexes.add(obj_idx)
 
