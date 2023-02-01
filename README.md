@@ -227,7 +227,7 @@ grid.show()
 
 ## About plotly-resampler
 
-wraplotly uses the [plotly-resampler](https://plotly.com/) library, which solves memory issues when displaying large plots, by downsampling (aggregating) the data respective to the view and then plotting the aggregated points. This is done automaticly when the data passed to the wraplotly objects are too large. Here is an example:
+wraplotly uses the [plotly-resampler](https://plotly.com/) library, which solves memory issues when displaying large plots, by downsampling (aggregating) the data respective to the view and then plotting the aggregated points. This is done automaticly when the data passed to the wraplotly objects is too large. Here is an example:
 
 ```python
 x = np.arange(1_000_000)
