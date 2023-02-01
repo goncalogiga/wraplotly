@@ -458,14 +458,17 @@ class countplot(draw):
     """
     type: str = "scatter"
 
-    def __init__(self, df, x, hue):
+    def __init__(self, df, x, hue=None):
         self.x = x
         self.df = df
         self.hue = hue
 
     def __plot_fn__(self):
-        df = self.df.groupby(by=[self.x, self.hue]).size().reset_index(name="counts")
+        by = [self.x] if self.hue is None else [self.x, self.hue]
+        df = self.df.groupby(by=by).size().reset_index(name="counts")
         if self._wraplotly_context == "px":
             return px.bar(data_frame=df, x=self.x, y="counts", color=self.hue, barmode="group")
         elif self._wraplotly_context == "go":
+            if self.hue is None:
+                return [go.Bar(x=df[self.x], y=df["counts"])]
             return [go.Bar(x=df[df[self.hue] == c][self.x], y=df[df[self.hue] == c]["counts"], name=c) for c in set(df[self.hue])]
