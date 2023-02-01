@@ -82,7 +82,7 @@ class draw:
     def show(self):
         if self._resample:
             register_plotly_resampler(mode='auto')
-            warnings.warn(f"Data was too large (~{self._points}) and had to be downsampled using plotly-resampler.")
+            warnings.warn(f"Data was too large (~{self._points} entries) and had to be downsampled using plotly-resampler.")
             self._wraplotly_context = "go"
             self._fig = go.Figure()
             for obj in self.__plot_fn__():
