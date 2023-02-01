@@ -9,6 +9,8 @@ such like Grid.
 import pandas
 import warnings
 import numpy as np
+import plotly.graph_objects as go
+from plotly_resampler import register_plotly_resampler
 
 
 """ === some helper function """
@@ -30,7 +32,21 @@ def count_nans_and_alert(l, arg):
 
 
 class draw:
-    _wraplotly_context: str = "px" # default is plotly express (easier to use)
+    _min_points_before_resampling = 75000
+    _wraplotly_context: str = "px"
+    _resample = False
+
+    def __resampler__(self):
+        self._points = 0
+
+        if self.df is not None:
+            self._points += max(self.df.shape)
+        if self.x is not None and not isinstance(self.x, str):
+            self._points += len(self.x)
+        if self.y is not None and not isinstance(self.y, str):
+            self._points += len(self.y)
+
+        self._resample = self._points > self._min_points_before_resampling
 
     def __prepare_2d_plot_args__(self, df, x, y):
         # In order to call line without a dataframe in arragements
@@ -59,15 +75,21 @@ class draw:
         if "name" in self.kwargs:
             raise ValueError("Key argument 'name' should not be used outside of arrange methods. Use 'title' instead.")
 
-    def __plot_fn__(self):
-        raise NameError("Draw object does not define a '__plot_fn__' internal method.")
-
     @property
     def fig(self):
         return self.__plot_fn__()
 
     def show(self):
-        self.__plot_fn__().show()
+        if self._resample:
+            register_plotly_resampler(mode='auto')
+            warnings.warn(f"Data was too large (~{self._points}) and had to be downsampled using plotly-resampler.")
+            self._wraplotly_context = "go"
+            self._fig = go.Figure()
+            for obj in self.__plot_fn__():
+                self._fig.add_trace(obj)
+            self._fig.show()
+        else:
+            self.__plot_fn__().show()
 
     def __repr__(self):
         self.show(); return ''

@@ -224,3 +224,22 @@ grid.show()
 ```
 
 <img src="images/grid_combined.png" width="900" height="250" />
+
+## About plotly-resampler
+
+wraplotly uses the [plotly-resampler](https://plotly.com/) library, which solves memory issues when displaying large plots, by downsampling (aggregating) the data respective to the view and then plotting the aggregated points. This is done automaticly when the data passed to the wraplotly objects are too large. Here is an example:
+
+```python
+x = np.arange(1_000_000)
+noisy_sin = (3 + np.sin(x / 200) + np.random.randn(len(x)) / 10) * x / 1_000
+
+wp.line(noisy_sin)
+```
+
+```
+/home/wraplotly/base.py:85: UserWarning:
+
+Data was too large (~1000000) and had to be downsampled using plotly-resampler.
+```
+
+<img src="images/large.png" width="900" height="250" />

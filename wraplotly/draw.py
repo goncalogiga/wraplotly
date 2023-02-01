@@ -40,7 +40,9 @@ class scatter(draw):
         self.df = df
         self.x = x
         self.y = y
-        self.__check_for_nans__()
+        self.__resampler__()
+        if not self._resample:
+            self.__check_for_nans__()
 
     def __plot_fn__(self):
         """
@@ -92,7 +94,9 @@ class line(draw):
         self.df = df
         self.x = x
         self.y = y
-        self.__check_for_nans__()
+        self.__resampler__()
+        if not self._resample:
+            self.__check_for_nans__()
 
     def __plot_fn__(self):
         """
@@ -143,7 +147,9 @@ class colored_line(draw):
         self.y = y
         self.color = color
         self.palette = palette
-        self.__check_for_nans__()
+        self.__resampler__()
+        if not self._resample:
+            self.__check_for_nans__()
 
     def __plot_fn__(self):
         """
@@ -223,7 +229,9 @@ class bar(draw):
         self.df = df
         self.x = x
         self.y = y
-        self.__check_for_nans__()
+        self.__resampler__()
+        if not self._resample:
+            self.__check_for_nans__()
 
     def __plot_fn__(self):
         """
@@ -270,7 +278,9 @@ class histogram(draw):
         self.x = x
         self.y = y
         self.color = color
-        self.__check_for_nans__()
+        self.__resampler__()
+        if not self._resample:
+            self.__check_for_nans__()
 
     def __go_Histogram__(self):
         if self.df is None:
@@ -344,7 +354,9 @@ class box(draw):
         self.df = df
         self.x = x
         self.y = y
-        self.__check_for_nans__()
+        self.__resampler__()
+        if not self._resample:
+            self.__check_for_nans__()
 
     def __plot_fn__(self):
         """
@@ -470,5 +482,5 @@ class countplot(draw):
             return px.bar(data_frame=df, x=self.x, y="counts", color=self.hue, barmode="group")
         elif self._wraplotly_context == "go":
             if self.hue is None:
-                return [go.Bar(x=df[self.x], y=df["counts"])]
+                return [go.Bar(x=df[self.x], y=df["counts"], name=self.x)]
             return [go.Bar(x=df[df[self.hue] == c][self.x], y=df[df[self.hue] == c]["counts"], name=c) for c in set(df[self.hue])]

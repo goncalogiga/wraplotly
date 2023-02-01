@@ -8,6 +8,6 @@ setuptools.setup(
     description='A small wrapper around plotly to have easier access to some of the functions I use most when doing data anlysis.',
     license='MIT',
     packages=['wraplotly'],
-    install_requires=['numpy', 'plotly', 'seaborn', 'pandas'],
+    install_requires=['numpy', 'plotly', 'seaborn', 'pandas', 'plotly-resampler'],
     python_requires='>=3.6',
 )
