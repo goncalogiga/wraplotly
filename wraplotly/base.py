@@ -10,7 +10,7 @@ import pandas
 import warnings
 import numpy as np
 import plotly.graph_objects as go
-from plotly_resampler import register_plotly_resampler
+from plotly_resampler import FigureWidgetResampler
 
 
 """ === some helper function """
@@ -88,10 +88,9 @@ class draw:
 
     def show(self):
         if self._resample:
-            register_plotly_resampler(mode='auto')
             warnings.warn(f"Data was too large (~{self._points} entries) and had to be downsampled using plotly-resampler.")
             self._wraplotly_context = "go"
-            self._fig = go.Figure()
+            self._fig = FigureWidgetResampler(go.Figure())
             for obj in self.__plot_fn__():
                 self._fig.add_trace(obj)
             self._fig.show()

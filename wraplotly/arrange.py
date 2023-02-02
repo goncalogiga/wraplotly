@@ -2,6 +2,7 @@ import warnings
 import numpy as np
 from plotly.subplots import make_subplots
 from wraplotly.base import arrange
+from plotly_resampler import FigureWidgetResampler
 
 
 class grid(arrange):
@@ -94,6 +95,8 @@ class grid(arrange):
         if self.object_cnt >= self.nb_of_objs:
             raise RuntimeError(f"Too many objects added to grid. Maximum calls available is {self.nb_of_objs}.")
             
+        self._resample = any(obj._resample for obj in objects)
+
         self.objects[self.object_cnt] = list(objects)
         self.object_cnt += 1
 
@@ -157,6 +160,10 @@ class grid(arrange):
             vertical_spacing = 0.25
         )
 
+        if self._resample:
+            warnings.warn(f"Data was too large and had to be downsampled using plotly-resampler.")
+            self._fig = FigureWidgetResampler(self._fig)
+
         self.__label_axis__()
 
         for objects, kwargs in prefig:
@@ -206,9 +213,14 @@ class combine(arrange):
     """
     def __init__(self, *args):
         self.args = args
+        self._resample = any(obj._resample for obj in args)
 
     def build_fig(self):
         self._fig = make_subplots(rows=1, cols=1)
+
+        if self._resample:
+            warnings.warn(f"Data was too large and had to be downsampled using plotly-resampler.")
+            self._fig = FigureWidgetResampler(self._fig)
 
         for object in self.args:
             object._wraplotly_context = "go"
