@@ -32,12 +32,13 @@ class scatter(draw):
     """
     type: str = "scatter"
 
-    def __init__(self, df=None, x=None, y=None, **kwargs):
+    def __init__(self, df=None, x=None, y=None, color=None, **kwargs):
         self.kwargs = kwargs
         self.__register_axis_names__(x, y)
 
         df, x, y = self.__prepare_2d_plot_args__(df, x, y)
 
+        self.color = color
         self.df = df
         self.x = x
         self.y = y
@@ -51,8 +52,13 @@ class scatter(draw):
         """
         if self._wraplotly_context == "px":
             self.__px_to_go_bad_conversion_errors__()
-            return px.scatter(data_frame=self.df, x=self.x, y=self.y, **self.kwargs)
+            return px.scatter(data_frame=self.df, x=self.x, y=self.y, color=self.color, **self.kwargs)
         elif self._wraplotly_context == "go" and self.df is not None:
+            if self.color is not None:
+                return [
+                    go.Scatter(x=self.df[self.df[self.color] == c][self.x], y=self.df[self.df[self.color] == c][self.y], mode="markers", name=c, **self.kwargs)\
+                    for c in set(self.df[self.color])
+                ]
             return [go.Scatter(x=self.df[self.x], y=self.df[self.y], mode="markers", **self.kwargs)]
         elif self._wraplotly_context == "go":
             return [go.Scatter(x=self.x, y=self.y, mode="markers", **self.kwargs)]
