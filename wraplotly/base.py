@@ -38,9 +38,9 @@ class draw:
     x_name, y_name = "", ""
 
     def __register_axis_names__(self, x, y):
-        if x and isinstance(x, str):
+        if x is not None and isinstance(x, str):
             self.x_name = x
-        if y and isinstance(y, str):
+        if y is not None and isinstance(y, str):
             self.y_name = y
 
     def __resampler__(self):
