@@ -155,6 +155,16 @@ wp.countplot(df, x="Name", hue="Defect severity")
 
 <img src="images/count_plot.png" width="900" height="250" />
 
+Pairplot
+
+```python
+import plotly.express as px
+df = px.data.iris()
+wp.pairplot(df=df.drop(columns="species_id"), color="species")
+```
+
+<img src="images/pairplot.png" width="500" height="500" />
+
 
 ### Arranging
 

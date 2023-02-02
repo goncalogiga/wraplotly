@@ -34,6 +34,7 @@ class scatter(draw):
 
     def __init__(self, df=None, x=None, y=None, **kwargs):
         self.kwargs = kwargs
+        self.__register_axis_names__(x, y)
 
         df, x, y = self.__prepare_2d_plot_args__(df, x, y)
 
@@ -88,6 +89,7 @@ class line(draw):
             raise ValueError("line object cannot only infer the x-axis not the y-axis. Please use y=... instead of x=...")
         
         self.kwargs = kwargs
+        self.__register_axis_names__(x, y)
 
         df, x, y = self.__prepare_2d_plot_args__(df, x, y)
 
@@ -142,6 +144,8 @@ class colored_line(draw):
     """
     def __init__(self, df=None, x=None, y=None, color=None, palette=None, **kwargs):
         self.kwargs = kwargs
+        self.__register_axis_names__(x, y)
+
         self.df = df
         self.x = x
         self.y = y
@@ -226,6 +230,8 @@ class bar(draw):
 
     def __init__(self, df=None, x=None, y=None, **kwargs):
         self.kwargs = kwargs
+        self.__register_axis_names__(x, y)
+
         self.df = df
         self.x = x
         self.y = y
@@ -274,6 +280,8 @@ class histogram(draw):
 
     def __init__(self, df=None, x=None, y=None, color=None, **kwargs):
         self.kwargs = kwargs
+        self.__register_axis_names__(x, y)
+
         self.df = df
         self.x = x
         self.y = y
@@ -351,6 +359,8 @@ class box(draw):
 
     def __init__(self, df=None, x=None, y=None, **kwargs):
         self.kwargs = kwargs
+        self.__register_axis_names__(x, y)
+
         self.df = df
         self.x = x
         self.y = y
@@ -475,6 +485,8 @@ class countplot(draw):
         self.df = df
         self.hue = hue
 
+        self.x_name, self.y_name = x, f"counts {hue}" if hue else "counts"
+
     def __plot_fn__(self):
         by = [self.x] if self.hue is None else [self.x, self.hue]
         df = self.df.groupby(by=by).size().reset_index(name="counts")
@@ -484,3 +496,17 @@ class countplot(draw):
             if self.hue is None:
                 return [go.Bar(x=df[self.x], y=df["counts"], name=self.x)]
             return [go.Bar(x=df[df[self.hue] == c][self.x], y=df[df[self.hue] == c]["counts"], name=c) for c in set(df[self.hue])]
+
+
+class pairplot(draw):
+    def __init__(self, df, height=800, width=800, color=None):
+        self.df = df
+        self.color = color
+        self.height = height
+        self.width = width
+
+    def __plot_fn__(self):
+        if self._wraplotly_context == "go":
+            raise ValueError("pairplot does not support arragements.")
+
+        return ff.create_scatterplotmatrix(self.df, diag='box', index=self.color, height=self.height, width=self.width)

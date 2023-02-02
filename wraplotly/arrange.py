@@ -51,8 +51,10 @@ class grid(arrange):
     """
     objects, object_cnt= {}, 0
 
-    def __init__(self, layout: list, column_widths=None, row_heights=None, **kwargs):
-        self.kwargs = kwargs
+    def __init__(self, layout: list, column_widths=None, row_heights=None, x_title=None, y_title=None, subplot_title=None):
+        self.x_title = x_title
+        self.y_title = y_title
+        self.subplot_title = subplot_title
         self.layout = np.array(layout)
         self.rows = self.layout.shape[0]
         self.cols = self.layout.shape[1]
@@ -63,6 +65,8 @@ class grid(arrange):
             self.__build_objects_base_specs__()
         else:
             self.specs = None
+
+        self.axis_items = []
 
     def __build_objects_base_specs__(self):
         """
@@ -92,6 +96,16 @@ class grid(arrange):
             
         self.objects[self.object_cnt] = list(objects)
         self.object_cnt += 1
+
+    def axis(self, x_title=None, y_title=None):
+        if x_title and isinstance(x_title, str):
+            self.axis_items.append((f'xaxis{self.object_cnt}', x_title))
+        if y_title and isinstance(y_title, str):
+            self.axis_items.append((f'yaxis{self.object_cnt}', y_title))
+
+    def __label_axis__(self):
+        for axis, title in self.axis_items:
+            self._fig['layout'][axis]['title'] = title
 
     def build_fig(self):
         """
@@ -136,8 +150,14 @@ class grid(arrange):
             cols=self.cols, 
             column_widths=self.column_widths, 
             row_heights=self.row_heights, 
-            specs=self.specs
+            specs=self.specs,
+            x_title=self.x_title,
+            y_title=self.y_title,
+            subplot_titles=self.subplot_title,
+            vertical_spacing = 0.25
         )
+
+        self.__label_axis__()
 
         for objects, kwargs in prefig:
             for obj in objects:
@@ -156,6 +176,7 @@ class vstack(arrange):
 
         for object in self.args:
             g(object)
+            g.axis(object.x_name, object.y_name)
 
         g.build_fig()
         self._fig = g.fig
@@ -173,6 +194,7 @@ class hstack(arrange):
 
         for object in self.args:
             g(object)
+            g.axis(object.x_name, object.y_name)
 
         g.build_fig()
         self._fig = g.fig
