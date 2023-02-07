@@ -34,7 +34,7 @@ fig = fig.update_layout(title="Different linkage impacting the agglomerative clu
 fig.show()
 ```
 
-<img src="images/first_grid.png" width="700" height="200" />
+<img src="images/first_grid.png" width="950" height="300" />
 
 There is also a built-in function to stack figures horizontaly:
 
@@ -82,7 +82,7 @@ fig = fig.update_layout(height=750)
 fig.show()
 ```
 
-<img src="images/time_series.png" width="700" height="350" />
+<img src="images/time_series.png" width="950" height="500" />
 
 
 ### Combining
@@ -103,7 +103,7 @@ wp.combine(
 )
 ```
 
-<img src="images/comb_time_series.png" width="700" height="200" />
+<img src="images/comb_time_series.png" width="950" height="300" />
 
 It is also possible to combine objects inside of a grid arragement by including multiple arguments in the grid call:
 
