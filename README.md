@@ -1,36 +1,56 @@
 # wraplotly
 
-A small wrapper around [plotly](https://plotly.com/) to have easier access to some of the functions I use most when doing Data analysis.
-Some examples of what wraplotly offers is given in the notebook ```examples.ipynb```.
+wraplotly is a small wrapper around [plotly](https://plotly.com/) built to:
+
+* Making it easier to create subplots by using wrappers containg both the plotly express and the graph objects (sometimes ever figure factory).
+* Automaticly resample scatter plots that contain too much information using the [plotly-resampler](https://github.com/predict-idlab/plotly-resampler) library.
+* Add some data analysis related functionalities to plotly.
 
 A quick demonstration of how wraplotly handles subfigures for instance:
 
 ```python
 import wraplotly as wp
+from sklearn import datasets
+from sklearn.cluster import AgglomerativeClustering
 
-grid = wp.grid([
-    [0,1], 
-    [0,2]
-])
+n_samples = 500
+points, _ = datasets.make_circles(n_samples=n_samples, factor=0.5, noise=0.05)
+x, y = points[:, 0], points[:, 1]
 
-grid(wp.line(x=[1,2,3], y=[5,6,5], name="Test 1"))
-grid(wp.line(x=[1,2,3], y=[12,12,5], name="Test 2"))
-grid(wp.line(x=[1,2,3], y=[-1,-1,5], name="Test 3"))
-grid.show()
-```
+c_single = AgglomerativeClustering(linkage="single").fit(points).labels_
+c_average = AgglomerativeClustering(linkage="average").fit(points).labels_
+c_complete = AgglomerativeClustering(linkage="complete").fit(points).labels_
+c_ward = AgglomerativeClustering(linkage="ward").fit(points).labels_
 
-<img src="images/grid.png" width="900" height="200" />
+grid = wp.grid([[0, 1, 2, 3]], subplot_titles=["Single", "Average", "Complete", "Ward"])
 
-The figure object can still be accessed with the ```fig``` proprety so the wrapper doesn't really restrain anything.
-For example, the wrapper class ```colored_line``` in the next example, makes it possible to add a title to the figure:
+grid(wp.scatter(x, y, color=c_single))
+grid(wp.scatter(x, y, color=c_average))
+grid(wp.scatter(x, y, color=c_complete))
+grid(wp.scatter(x, y, color=c_ward))
 
-```python
-fig = wp.colored_line(dataset, x="Date", y="Cases", color="Event", mode="lines").fig
-fig.update_layout(title="Covid cases in Saudi Arabia with different events colored")
+fig = grid.fig
+fig = fig.update_layout(title="Different linkage impacting the agglomerative clustering of a circle")
 fig.show()
 ```
 
-<img src="images/coloredline.png" width="1000" height="300" />
+<img src="images/first_grid.png" width="700" height="200" />
+
+There is also a built-in function to stack figures horizontaly:
+
+```python
+hstack = wp.hstack(
+    wp.scatter(x, y, color=c_single),
+    wp.scatter(x, y, color=c_average),
+    wp.scatter(x, y, color=c_complete),
+    wp.scatter(x, y, color=c_ward),
+    subplot_titles=["Single", "Average", "Complete", "Ward"],
+)
+
+fig = hstack.fig
+fig = fig.update_layout(title="Different linkage impacting the agglomerative clustering of a circle")
+fig.show()
+```
 
 ## Installation
 
@@ -38,202 +58,92 @@ fig.show()
 pip3 install git+https://github.com/goncalogiga/wraplotly
 ```
 
-## Full list of wraplotly wrapper functions
+## Other arragements
 
-### Drawings
+Aside from the ```grid``` and the ```hstack``` methods, it is also possible to use vertical stacking (```vstack```) and combination of plots (```combine```)
 
-Simple line
-
-```python
-wp.line(x=[1,2,3], y=[7,5,7])
-```
-
-<img src="images/simple_line.png" width="900" height="200" />
-
-Simple line using a dataframe
+### Vertical stacking
 
 ```python
-df = pd.DataFrame({"x": [1,2,3], "y": [10,0,10]})
-wp.line(df, x='x', y='y')
+oil = pd.read_csv("/kaggle/input/store-sales-time-series-forecasting/oil.csv")
+transactions = pd.read_csv("/kaggle/input/store-sales-time-series-forecasting/transactions.csv")
+
+oil['date'] = pd.to_datetime(oil['date'], format = "%Y-%m-%d")
+transactions['date'] = pd.to_datetime(transactions['date'], format = "%Y-%m-%d")
+
+stack = wp.vstack(
+    wp.line(transactions, "date", "transactions", name="transactions"),
+    wp.line(oil, x="date", y="dcoilwtico", name="oil price"),
+    subplot_titles=["Number of transactions per day", "Daily oil price"]
+)
+
+fig = stack.fig
+fig = fig.update_layout(height=750)
+fig.show()
 ```
 
-<img src="images/simple_line_df.png" width="900" height="200" />
+<img src="images/time_series.png" width="700" height="350" />
 
-*Note*: We will now omit this 'dataframe method', but it can be used in each of the following drawing methods. Note that it is also possible to simply call ```line([1,2,3])``` to omit trivial x-axis.
 
-Colored line
+### Combining
 
 ```python
-x_list = [1, 2, 3, 4, 5, 6]
-y_list = [5, 1, 1, 4, 1, 3]
-color_list = ['Class 1', 'Class 2', 'Class 1', 'Class 2', 'Class 1', 'Class 2']
-wp.colored_line(x=x_list, y=y_list, color=color_list, mode="lines")
+oil = pd.read_csv("/kaggle/input/store-sales-time-series-forecasting/oil.csv")
+transactions = pd.read_csv("/kaggle/input/store-sales-time-series-forecasting/transactions.csv")
+
+oil['date'] = pd.to_datetime(oil['date'], format = "%Y-%m-%d")
+transactions['date'] = pd.to_datetime(transactions['date'], format = "%Y-%m-%d")
+
+transactions["transactions"] = 1 + transactions["transactions"] / transactions["transactions"].max() * 100
+
+wp.combine(
+    wp.line(transactions, "date", "transactions", name="transactions"),
+    wp.line(oil, x="date", y="dcoilwtico", name="oil price"),
+    subplot_titles=["Number of transactions per day & Daily oil prices"]
+)
 ```
 
-<img src="images/colored_line.png" width="900" height="200" />
+<img src="images/comb_time_series.png" width="700" height="200" />
 
-Scatter plots
-
-```python
-wp.scatter(x=[1,2,3], y=[1,2,3])
-```
-
-<img src="images/scatter.png" width="900" height="200" />
-
-Bar plots
-
-```python
-wp.bar(x=[0,1,2], y=[6,12,5])
-```
-
-<img src="images/bar.png" width="900" height="200" />
-
-Box plots
-
-```python
-import plotly.express as px
-df = px.data.tips()
-wp.box(df, x="time", y="total_bill")
-```
-
-<img src="images/box.png" width="900" height="200" />
-
-Heatmaps
-
-```python
-import plotly.express as px
-df = px.data.medals_wide(indexed=True)
-wp.heatmap(df)
-```
-
-<img src="images/heatmap.png" width="500" height="200" />
-
-Images
+It is also possible to combine objects inside of a grid arragement by including multiple arguments in the grid call:
 
 ```python
 from skimage import io
+import wraplotly as wp
 img = io.imread('https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Crab_Nebula.jpg/240px-Crab_Nebula.jpg')
-wp.imshow(img)
-```
 
-<img src="images/image.png" width="200" height="200" />
-
-Confusion Matrix
-
-```python
-matrix = [[159, 21], [39, 75]]
-labels = ['Positive', 'Negative']
-wp.confusion(matrix, labels)
-```
-
-<img src="images/confusion_matrix.png" width="400" height="200" />
-
-Histogram
-
-```python
-import plotly.express as px
-df = px.data.tips()
-wp.histogram(df, x="sex", y="total_bill", color="sex", pattern_shape="smoker")
-```
-
-<img src="images/histogram.png" width="900" height="250" />
-
-Count Plot
-
-```python
-import pandas as pd
-
-# Some dummy dataset
-df = pd.DataFrame(
-    {
-        "Name": ["User1", "User1", "User1", "User2"],
-        "Defect severity": ["Medium", "Medium", "High", "High"],
-    }
-)
-wp.countplot(df, x="Name", hue="Defect severity")
-```
-
-<img src="images/count_plot.png" width="900" height="250" />
-
-Pairplot
-
-```python
-import plotly.express as px
-df = px.data.iris()
-wp.pairplot(df=df.drop(columns="species_id"), color="species")
-```
-
-<img src="images/pairplot.png" width="500" height="500" />
-
-
-### Arranging
-
-Horizontal stacking of figures:
-
-```python
-import plotly.express as px
-df = px.data.tips()
-
-wp.hstack( 
-    wp.box(df, y="total_bill", name="Overall box plot"),
-    wp.box(df, x="time", y="total_bill")
-)
-```
-
-<img src="images/hstack.png" width="900" height="200" />
-
-Vertical stacking of figures:
-
-```python
-wp.vstack(
-    wp.line(x=[1,2,3], y=[5,6,6], mode="lines", name="1"),
-    wp.line(x=[3,4,5], y=[1,1,1], mode="lines", name="2")
-)
-```
-
-<img src="images/vstack.png" width="900" height="200" />
-
-Combining figures:
-
-```python
-wp.combine(
-    wp.bar(x=[0,1,2], y=[6,12,5]),
-    wp.bar(x=[3,4,5], y=[10,10,10])
-)
-```
-
-<img src="images/combine.png" width="900" height="200" />
-
-grid
-
-```python
 grid = wp.grid([
-    [0,1], 
-    [0,2]
+    [0,1],
+    [0,1],
 ])
 
-grid(wp.line(x=[1,2,3], y=[5,6,5], name="Test 1"))
-grid(wp.line(x=[1,2,3], y=[12,12,5], name="Test 2"))
-grid(wp.line(x=[1,2,3], y=[-1,-1,5], name="Test 3"))
+red_channel   = img[:, :, 0].flatten()
+green_channel = img[:, :, 1].flatten()
+blue_channel  = img[:, :, 2].flatten()
+
+grid(wp.imshow(img))
+grid(wp.histogram(x=red_channel), wp.histogram(x=green_channel), wp.histogram(x=blue_channel))
 grid.show()
 ```
 
-<img src="images/grid.png" width="900" height="200" />
+<img src="images/complex_grid.png" width="800" height="250" />
 
-grid with the first line combined
+## Full list of wraplotly wrapper functions
 
-```python
-grid = wp.grid([
-    [0],
-    [1]
-])
+|Definition|Inspired By|Supports arragements (grid, hstack ect.)|
+| -------- | --------- | -------------------------------------- |
+|```line```| px.line & go.Scatter | Yes |
+|```scatter```| px.scatter & go.Scatter | Yes |
+|```bar```| px.bar & go.Bar | Yes |
+|```box```| px.box & go.Box | Yes |
+|```histogram```| px.histogram & go.Histogram | Yes |
+|```imshow```| px.imshow & go.Image | Yes |
+|```heatmap``` | sns.heatmap | No |
+|```distplot```| sns.distplot | No |
+|```pairplot```| sns.pairplot | No |
+|```colored_line```| px.scatter | No
 
-grid(wp.line([0,1,3], name="Combined 1"), wp.line([3,2,5], name="Combined 2"))
-grid(wp.line([5,6,5], name="Bellow"))
-grid.show()
-```
 
-<img src="images/grid_combined.png" width="900" height="250" />
 
 ## About plotly-resampler
 

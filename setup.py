@@ -4,7 +4,7 @@ import setuptools
 
 setuptools.setup(
     name='wraplotly',
-    version='1.2',
+    version='2.0',
     description='A small wrapper around plotly to have easier access to some of the functions I use most when doing data anlysis.',
     license='MIT',
     packages=['wraplotly'],
