@@ -105,7 +105,7 @@ wp.combine(
 
 <img src="images/comb_time_series.png" width="950" height="300" />
 
-It is also possible to combine objects inside of a grid arragement by including multiple arguments in the grid call:
+<!-- It is also possible to combine objects inside of a grid arragement by including multiple arguments in the grid call:
 
 ```python
 from skimage import io
@@ -126,7 +126,7 @@ grid(wp.histogram(x=red_channel), wp.histogram(x=green_channel), wp.histogram(x=
 grid.show()
 ```
 
-<img src="images/complex_grid.png" width="800" height="250" />
+<img src="images/complex_grid.png" width="800" height="250" /> -->
 
 ## Full list of wraplotly wrapper functions
 
