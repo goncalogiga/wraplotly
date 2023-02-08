@@ -138,6 +138,7 @@ grid.show()
 |```box```| px.box & go.Box | Yes |
 |```histogram```| px.histogram & go.Histogram | Yes |
 |```imshow```| px.imshow & go.Image | Yes |
+|```density_heatmap```| px.density_heatmap & go.Histogram2d | Yes |
 |```heatmap``` | sns.heatmap | No |
 |```distplot```| sns.distplot | No |
 |```pairplot```| sns.pairplot | No |

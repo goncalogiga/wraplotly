@@ -260,6 +260,43 @@ class histogram(base.plot2d):
         return go.Histogram(x=x, y=y, orientation=self.orientation, histfunc=self.histfunc, **self.__color_args__(color, name, show_name, row), **self.kwargs)
 
 
+class density_heatmap(base.plot2d):
+    """
+    A class grouping plotly express' density_heatmap and plotly graph_objects' Histogram2d.
+
+    Attributes
+    ----------
+    + df : pandas.DataFrame
+        A DataFrame containing some columns we wish to display on a line chart.
+    + x : str|list
+        Either a string specifying which column of self.df should be used as x-axis or a list that
+        will be used as the x-axis data.
+    + y : str|list
+        Either a string specifying which column of self.df should be used as y-axis or a list that
+        will be used as the y-axis data.
+
+    Methods
+    -------
+    + fig (proprety):
+        Returns the plotly object associated with the object heriting from plot2d
+    + show:
+        Shows the figure
+    """
+    name = "Density Map"
+    args_type = "df x y"
+
+    def __init__(self, df=None, x=None, y=None, x_axis=None, y_axis=None, title=None, **kwargs):
+        self.kwargs = kwargs
+        super().__init__(df, x, y, None, x_axis, y_axis, title)
+
+    def __px__(self):
+        self.set_color_discrete_sequence()
+        return px.density_heatmap(data_frame=self.df, x=self.x, y=self.y, title=self.title, **self.kwargs)
+
+    def __go__(self, x, y, color=None, name=None, show_name=None, row=None):
+        return go.Histogram2d(x=x, y=y, **self.kwargs)
+
+
 class imshow(base.draw):
     name = "Image"
 

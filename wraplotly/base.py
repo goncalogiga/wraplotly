@@ -275,6 +275,8 @@ class make_grid:
         no colors in the data or multiple elements in the list when a color is given.
         """
         def get_color(c):
+            if c is None:
+                return None
             if c in self.palette:
                 return self.palette[c]
             return self.heatmaps[c]
@@ -316,6 +318,15 @@ class make_grid:
         return go_objects
 
 
+    def add_trace(self, go_object, **trace_kwargs):
+        if self.needs_resample:
+            hf_x = go_object['x'] if 'x' in go_object else None
+            hf_y = go_object['y'] if 'y' in go_object else None
+            self._fig.add_trace(go_object, hf_x=hf_x, hf_y=hf_y, **trace_kwargs)
+        else:
+            self._fig.add_trace(go_object, **trace_kwargs)
+
+
     def make_traces(self):
         """
         Generates every trace needed to complete the grid arrangement.
@@ -340,10 +351,10 @@ class make_grid:
 
         for objects in self.objects:
             for object, trace_kwargs in objects:
-                if object.args_type == "data": # might not be general enough
-                    self._fig.add_trace(object.__go__(), **trace_kwargs)
+                if object.args_type == "plain": # might not be general enough
+                    self.add_trace(object.__go__(), **trace_kwargs)
                     continue
-
+                
                 if object.color is not None and object.df is not None:
                     if not self.disable_legend_click and object.color in object.df:
                         key = (trace_kwargs['row'], trace_kwargs['col'])
@@ -351,12 +362,7 @@ class make_grid:
                         self.disable_legend_click = same_colors_in_different_traces(object_colors, key)
 
                 for go_object in self.make_go_objects(object, trace_kwargs["row"]):
-                    if self.needs_resample:
-                        hf_x = go_object['x'] if 'x' in go_object else None
-                        hf_y = go_object['y'] if 'y' in go_object else None
-                        self._fig.add_trace(go_object, hf_x=hf_x, hf_y=hf_y, **trace_kwargs)
-                    else:
-                        self._fig.add_trace(go_object, **trace_kwargs)
+                    self.add_trace(go_object, **trace_kwargs)
 
 
     def update_layout(self, **kwargs):
@@ -438,7 +444,7 @@ class draw:
     """
     # The type given to the specs when using plotly's subplots
     type = "scatter"
-    args_type = "data"
+    args_type = "plain"
     needs_resample = False
     x_axis, y_axis = None, None
     color_discrete_sequence = None
