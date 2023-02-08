@@ -2,7 +2,7 @@
 
 wraplotly is a small wrapper around [plotly](https://plotly.com/) built to:
 
-* Making it easier to create subplots by using wrappers containg both the plotly express and the graph objects (sometimes ever figure factory).
+* Make it easier to create subplots by using wrappers containg both the plotly express and the graph objects (sometimes ever figure factory).
 * Automaticly resample scatter plots that contain too much information using the [plotly-resampler](https://github.com/predict-idlab/plotly-resampler) library.
 * Add some data analysis related functionalities to plotly.
 
