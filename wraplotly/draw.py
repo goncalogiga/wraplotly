@@ -393,7 +393,7 @@ class heatmap(base.draw):
 
 class distplot(base.draw):
     def __init__(self, hist_data=None, columns=None, title=None, **kwargs):
-        columns = columns if isinstance(columns, list) else [columns]
+        columns = columns if columns and isinstance(columns, list) else [columns] if columns else None
 
         if hist_data is not None and isinstance(hist_data, pandas.core.frame.DataFrame):
             columns = columns if columns else hist_data.select_dtypes(include=np.number).columns
@@ -403,10 +403,16 @@ class distplot(base.draw):
         self.columns = columns
         self.hist_data = hist_data
 
-        if "show_hist" in kwargs and kwargs["show_hist"] is False:
-            self.title = title if title is not None else "Kernel Density Estimation"
+        hist_title = "" if "show_hist" in kwargs and kwargs["show_hist"] is False else "Histogram" 
+        if "show_curve" in kwargs and kwargs["show_curve"] is False:
+            curve_title = ""
         else:
-            self.title = title if title is not None else "Histogram and Kernel Density Estimation"
+            curve_title = f"{kwargs['curve_type']} estimation" if "curve_type" in kwargs else "kernel density estimation"
+
+        if hist_title and curve_title:
+            self.title = title if title else hist_title + " and " + curve_title
+        else:
+            self.title = title if title else hist_title + curve_title
 
     def __go__(self, *args, **kwargs):
         raise RuntimeError("Wraplotly custom object 'distplot' cannot be arranged.")
