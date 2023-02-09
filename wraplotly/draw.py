@@ -393,6 +393,8 @@ class heatmap(base.draw):
 
 class distplot(base.draw):
     def __init__(self, hist_data=None, columns=None, title=None, **kwargs):
+        columns = columns if isinstance(columns, list) else [columns]
+
         if hist_data is not None and isinstance(hist_data, pandas.core.frame.DataFrame):
             columns = columns if columns else hist_data.select_dtypes(include=np.number).columns
             hist_data = [hist_data[c].values for c in columns]
