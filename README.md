@@ -130,7 +130,7 @@ grid.show()
 
 ## Full list of wraplotly wrapper functions
 
-|Definition|Supports arragements (grid, hstack ect.)| Wraps outise arragement | Wraps inside arragement |
+|Definition|Supports arragements (grid, hstack ect.)| Wraps outside arragement | Wraps inside arragement |
 | -------- | -------------------------------------- | ------------------------- | ------------------------- |
 |```line```| Yes | [px.line](https://plotly.com/python-api-reference/generated/plotly.express.line.html) | [go.Scatter](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Scatter.html) |
 |```scatter```| Yes | [px.scatter](https://plotly.com/python-api-reference/generated/plotly.express.scatter.html) | [go.Scatter](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Scatter.html) |
