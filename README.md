@@ -130,19 +130,30 @@ grid.show()
 
 ## Full list of wraplotly wrapper functions
 
-|Definition|Inspired By|Supports arragements (grid, hstack ect.)|
-| -------- | --------- | -------------------------------------- |
-|```line```| px.line & go.Scatter | Yes |
-|```scatter```| px.scatter & go.Scatter | Yes |
+|Definition|Supports arragements (grid, hstack ect.)| Wraps outise arragement | Wraps inside arragement |
+| -------- | -------------------------------------- | ------------------------- | ------------------------- |
+|```line```| Yes | [px.line](https://plotly.com/python-api-reference/generated/plotly.express.line.html) | [go.Scatter](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Scatter.html) |
+|```scatter```| Yes | [px.scatter](https://plotly.com/python-api-reference/generated/plotly.express.scatter.html) | [go.Scatter](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Scatter.html) |
+|```bar```| Yes | [px.bar](https://plotly.com/python-api-reference/generated/plotly.express.bar) | [go.Bar](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Bar.html) |
+|```box```| Yes | [px.box](https://plotly.com/python-api-reference/generated/plotly.express.box) | [go.Box](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Box.html) |
+|```histogram```| Yes | [px.histogram](https://plotly.com/python-api-reference/generated/plotly.express.histogram) | [go.Histogram](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Histogram.html) |
+|```imshow```| Yes | [px.imshow](https://plotly.com/python-api-reference/generated/plotly.express.imshow) | [go.Image](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Image.html) |
+|```density_heatmap```| Yes | [px.density_heatmap](https://plotly.com/python-api-reference/generated/plotly.express.density_heatmap) | [go.Histogram2d](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Histogram2d.html) |
+|```heatmap```| No | [px.imshow](https://plotly.com/python-api-reference/generated/plotly.express.imshow) | |
+|```distplot```| No | [ff.create_distplot](https://plotly.github.io/plotly.py-docs/generated/plotly.figure_factory.create_distplot.html) | |
+|```pairplot```| No | [ff.create_scatterplotmatrix](https://plotly.com/python-api-reference/generated/plotly.figure_factory.create_scatterplotmatrix.html) | |
+|```colored_line``` | No | [px.scatter](https://plotly.com/python-api-reference/generated/plotly.express.scatter.html) | |
+
+<!-- |```scatter```| px.scatter & go.Scatter | Yes |
 |```bar```| px.bar & go.Bar | Yes |
 |```box```| px.box & go.Box | Yes |
 |```histogram```| px.histogram & go.Histogram | Yes |
 |```imshow```| px.imshow & go.Image | Yes |
 |```density_heatmap```| px.density_heatmap & go.Histogram2d | Yes |
 |```heatmap``` | sns.heatmap | No |
-|```distplot```| sns.distplot | No |
+|```distplot```| ff.create_distplot | No |
 |```pairplot```| sns.pairplot | No |
-|```colored_line```| px.scatter | No
+|```colored_line```| px.scatter | No -->
 
 
 
