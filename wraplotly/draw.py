@@ -402,7 +402,11 @@ class distplot(base.draw):
         self.kwargs = kwargs
         self.columns = columns
         self.hist_data = hist_data
-        self.title = title if title is not None else "Distribution Plot"
+
+        if "show_hist" in kwargs and kwargs["show_hist"] is False:
+            self.title = title if title is not None else "Kernel Density Estimation"
+        else:
+            self.title = title if title is not None else "Histogram and Kernel Density Estimation"
 
     def __go__(self, *args, **kwargs):
         raise RuntimeError("Wraplotly custom object 'distplot' cannot be arranged.")
