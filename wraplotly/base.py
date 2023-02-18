@@ -200,7 +200,10 @@ class make_grid:
 
             if obj.df is not None and obj.color is not None:
                 object_color_len = len(set(obj.df[obj.color]))
-                if obj.use_heatmaps and object_color_len > MIN_OBJECTS_UNTIL_HEATMAP:
+                if obj.use_heatmaps and not np.issubdtype(obj.df[obj.color].dtype, np.number):
+                    warnings.warn(f"color column '{obj.color}' has a large amount of possibles values yet they are not numeric.")
+                    nb_of_colors += object_color_len
+                elif obj.use_heatmaps and object_color_len > MIN_OBJECTS_UNTIL_HEATMAP:
                     color_column = obj.df[obj.color]
                     self.update_color(i, f"Colorscale {i+1}") # Why not the actual color ?
                     self.heatmaps[obj.color] = list(color_column)
