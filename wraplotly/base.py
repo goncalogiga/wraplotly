@@ -10,6 +10,9 @@ from wraplotly import discrete_palette, utils
 from plotly_resampler import FigureWidgetResampler
 
 
+MIN_OBJECTS_UNTIL_HEATMAP = 2
+
+
 class make_grid:
     """
     The super class for any arragement of wraplotly's custom objects. This class should be
@@ -197,7 +200,7 @@ class make_grid:
 
             if obj.df is not None and obj.color is not None:
                 object_color_len = len(set(obj.df[obj.color]))
-                if object_color_len > 15:
+                if obj.use_heatmaps and object_color_len > MIN_OBJECTS_UNTIL_HEATMAP:
                     color_column = obj.df[obj.color]
                     self.update_color(i, f"Colorscale {i+1}") # Why not the actual color ?
                     self.heatmaps[obj.color] = list(color_column)
@@ -445,6 +448,7 @@ class draw:
     # The type given to the specs when using plotly's subplots
     type = "scatter"
     args_type = "plain"
+    use_heatmaps = False
     needs_resample = False
     x_axis, y_axis = None, None
     color_discrete_sequence = None

@@ -31,6 +31,8 @@ class scatter(base.plot2d):
         Shows the figure
     """
     name = "Scatter"
+    use_heatmaps = True
+
 
     def __init__(self, df=None, x=None, y=None, color=None, x_axis=None, y_axis=None, title=None, colorscale=None, **kwargs):
         self.kwargs = kwargs
